@@ -143,7 +143,7 @@ def increment_current_round_command_count():
 
 def send_next_single_upgrade(count):
     global __single_upgrades_current_index__
-    if __single_upgrades_current_index__ < 3 and count % 5 == 0:
+    if __single_upgrades_current_index__ < len(SINGLE_UPGRADES) and count % 5 == 0:
         send_text("!upgrade max " + SINGLE_UPGRADES[__single_upgrades_current_index__])
         __single_upgrades_current_index__ += 1
 
