@@ -7,11 +7,11 @@ PURCHASES = ["min", "caf", "sho", "far", "com", "bak", "bus", "hou", "cin", "pow
 
 UPGRADES = ["v", "cli", "sol", "cri", "v", "dep", "mul", "cli", "v", "sol", "cri", "dep"]
 SINGLE_UPGRADES = ["dis", "coi"]
-COMMAND_INTERVALS = [10, 15, 30, 45, 60, 90]
+COMMAND_INTERVALS = [10, 15, 30, 60, 120, 300, 600, 1500, 1800, 1800, 1800, 1800]
 
-INITIAL_REFACTOR_CODE = 4190
-INITIAL_REFACTOR_CODE_DATE = datetime.date(2019, 3, 21)
-MAX_ROUNDS = 3
+INITIAL_REFACTOR_CODE = 4431
+INITIAL_REFACTOR_CODE_DATE = datetime.date(2019, 3, 25)
+MAX_ROUNDS = 10
 
 __purchases_current_index__ = 0
 __upgrades_current_index__ = 0
@@ -74,6 +74,7 @@ def send_count_spam(count):
 
 def check_and_send_next_command(count):
     global __should_buy_max_all__
+    global __current_round__
     send_next_single_upgrade(count)
 
     command_interval_index = min(__current_round__ - 1, len(COMMAND_INTERVALS) - 1)
@@ -93,8 +94,11 @@ def check_and_send_next_command(count):
         # buys and upgrades should be sent in a 4:1 ratio (4 buys, 1 upgrade)
         elif __current_round__ == 2:
             send_next_command(5)
+        # after round 2 only upgrade crit with an ascending round interval
         else:
-            send_next_upgrade_command()
+            send_next_crit_command()
+            if __current_round__ >= 10:
+                __current_round__ = 10
 
 
 def send_next_command(update_modulo_interval):
@@ -125,6 +129,18 @@ def send_next_upgrade_command():
             prepare_next_round()
 
     send_text("!upgrade max " + UPGRADES[__upgrades_current_index__])
+    __upgrades_current_index__ += 1
+    increment_current_round_command_count()
+
+
+def send_next_crit_command():
+    global __upgrades_current_index__
+    if __upgrades_current_index__ == len(UPGRADES):
+        __upgrades_current_index__ = 0
+        if __current_round__ >= 3:
+            prepare_next_round()
+
+    send_text("!upgrade max crit")
     __upgrades_current_index__ += 1
     increment_current_round_command_count()
 
