@@ -7,7 +7,7 @@ PURCHASES = ["min", "caf", "sho", "far", "com", "bak", "bus", "hou", "cin", "pow
 
 UPGRADES = ["v", "cli", "sol", "cri", "v", "dep", "mul", "cli", "v", "sol", "cri", "dep"]
 SINGLE_UPGRADES = ["dis", "coi"]
-COMMAND_INTERVALS = [10, 15, 30, 60, 120, 300, 600, 1500, 1800, 1800, 1800, 1800]
+COMMAND_INTERVALS = [10, 15, 30, 60, 120, 299, 299]
 
 INITIAL_REFACTOR_CODE = 4431
 INITIAL_REFACTOR_CODE_DATE = datetime.date(2019, 3, 25)
@@ -16,7 +16,7 @@ MAX_ROUNDS = 10
 __purchases_current_index__ = 0
 __upgrades_current_index__ = 0
 __single_upgrades_current_index__ = 0
-__current_round__ = 1
+__current_round__ = 5
 __current_round_command_count__ = 0
 __current_refactor_code__ = INITIAL_REFACTOR_CODE
 __should_buy_max_all__ = True
@@ -97,8 +97,8 @@ def check_and_send_next_command(count):
         # after round 2 only upgrade crit with an ascending round interval
         else:
             send_next_crit_command()
-            if __current_round__ >= 10:
-                __current_round__ = 10
+            if __current_round__ >= 6:
+                __current_round__ = 6
 
 
 def send_next_command(update_modulo_interval):
@@ -165,7 +165,9 @@ def send_next_single_upgrade(count):
 
 
 def send_additional_commands(count):
-    if count % 300 == 0:
+    if count % 59 == 0:
+        send_text("!coins 378075831232364547")
+    elif count % 300 == 0:
         send_text("!guild raid")
     elif count % 287 == 0:
         send_text("!swap")
